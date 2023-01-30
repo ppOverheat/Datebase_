@@ -36,6 +36,8 @@
             this.ageLabel = new System.Windows.Forms.Label();
             this.ageTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.emailTextBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -51,6 +53,15 @@
             this.btnChange = new System.Windows.Forms.Button();
             this.btnFill = new System.Windows.Forms.Button();
             this.dataGridOrg = new System.Windows.Forms.DataGridView();
+            this.ID_org = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OrganizationName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Address = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EmployeeName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Age = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Email = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OrganizationDrop = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Image = new System.Windows.Forms.DataGridViewImageColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -72,12 +83,21 @@
             // 
             // dataGridView
             // 
+            this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView.Location = new System.Drawing.Point(-3, 364);
+            this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ID,
+            this.EmployeeName,
+            this.Age,
+            this.Email,
+            this.OrganizationDrop,
+            this.Image});
+            this.dataGridView.Location = new System.Drawing.Point(-2, 364);
             this.dataGridView.Name = "dataGridView";
-            this.dataGridView.RowTemplate.Height = 25;
-            this.dataGridView.Size = new System.Drawing.Size(596, 424);
+            this.dataGridView.RowTemplate.Height = 60;
+            this.dataGridView.Size = new System.Drawing.Size(798, 424);
             this.dataGridView.TabIndex = 1;
+            this.dataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
             // 
             // btnAdd
             // 
@@ -101,7 +121,7 @@
             // nameLabel
             // 
             this.nameLabel.AutoSize = true;
-            this.nameLabel.Location = new System.Drawing.Point(31, 31);
+            this.nameLabel.Location = new System.Drawing.Point(31, 36);
             this.nameLabel.Name = "nameLabel";
             this.nameLabel.Size = new System.Drawing.Size(42, 15);
             this.nameLabel.TabIndex = 4;
@@ -110,7 +130,7 @@
             // ageLabel
             // 
             this.ageLabel.AutoSize = true;
-            this.ageLabel.Location = new System.Drawing.Point(31, 103);
+            this.ageLabel.Location = new System.Drawing.Point(31, 90);
             this.ageLabel.Name = "ageLabel";
             this.ageLabel.Size = new System.Drawing.Size(31, 15);
             this.ageLabel.TabIndex = 5;
@@ -118,13 +138,15 @@
             // 
             // ageTextBox
             // 
-            this.ageTextBox.Location = new System.Drawing.Point(31, 138);
+            this.ageTextBox.Location = new System.Drawing.Point(31, 117);
             this.ageTextBox.Name = "ageTextBox";
             this.ageTextBox.Size = new System.Drawing.Size(139, 23);
             this.ageTextBox.TabIndex = 6;
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.emailTextBox);
+            this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.groupBox3);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.btnAddPhoto);
@@ -140,6 +162,22 @@
             this.groupBox1.Size = new System.Drawing.Size(339, 310);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
+            // 
+            // emailTextBox
+            // 
+            this.emailTextBox.Location = new System.Drawing.Point(31, 164);
+            this.emailTextBox.Name = "emailTextBox";
+            this.emailTextBox.Size = new System.Drawing.Size(139, 23);
+            this.emailTextBox.TabIndex = 14;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(31, 146);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(39, 15);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "Email:";
             // 
             // groupBox3
             // 
@@ -180,7 +218,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(31, 185);
+            this.label1.Location = new System.Drawing.Point(31, 203);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(78, 15);
             this.label1.TabIndex = 8;
@@ -189,7 +227,7 @@
             // orgsBox
             // 
             this.orgsBox.FormattingEnabled = true;
-            this.orgsBox.Location = new System.Drawing.Point(31, 212);
+            this.orgsBox.Location = new System.Drawing.Point(31, 221);
             this.orgsBox.Name = "orgsBox";
             this.orgsBox.Size = new System.Drawing.Size(139, 23);
             this.orgsBox.TabIndex = 7;
@@ -224,6 +262,7 @@
             this.button1.TabStop = false;
             this.button1.Text = "Submit";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.AddOrganizationClick);
             // 
             // label2
             // 
@@ -274,12 +313,73 @@
             // 
             // dataGridOrg
             // 
+            this.dataGridOrg.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridOrg.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridOrg.Location = new System.Drawing.Point(599, 364);
+            this.dataGridOrg.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ID_org,
+            this.OrganizationName,
+            this.Address});
+            this.dataGridOrg.Location = new System.Drawing.Point(802, 364);
             this.dataGridOrg.Name = "dataGridOrg";
             this.dataGridOrg.RowTemplate.Height = 25;
-            this.dataGridOrg.Size = new System.Drawing.Size(622, 424);
+            this.dataGridOrg.Size = new System.Drawing.Size(419, 424);
             this.dataGridOrg.TabIndex = 13;
+            // 
+            // ID_org
+            // 
+            this.ID_org.HeaderText = "ID";
+            this.ID_org.Name = "ID_org";
+            this.ID_org.ReadOnly = true;
+            // 
+            // OrganizationName
+            // 
+            this.OrganizationName.HeaderText = "Name";
+            this.OrganizationName.Name = "OrganizationName";
+            this.OrganizationName.ReadOnly = true;
+            // 
+            // Address
+            // 
+            this.Address.HeaderText = "Address";
+            this.Address.Name = "Address";
+            // 
+            // ID
+            // 
+            this.ID.HeaderText = "ID";
+            this.ID.Name = "ID";
+            this.ID.ReadOnly = true;
+            // 
+            // EmployeeName
+            // 
+            this.EmployeeName.HeaderText = "Name";
+            this.EmployeeName.Name = "EmployeeName";
+            // 
+            // Age
+            // 
+            this.Age.HeaderText = "Age";
+            this.Age.Name = "Age";
+            // 
+            // Email
+            // 
+            this.Email.HeaderText = "Email";
+            this.Email.Name = "Email";
+            this.Email.ReadOnly = true;
+            // 
+            // OrganizationDrop
+            // 
+            this.OrganizationDrop.HeaderText = "Organization";
+            this.OrganizationDrop.Items.AddRange(new object[] {
+            "-"});
+            this.OrganizationDrop.Name = "OrganizationDrop";
+            // 
+            // Image
+            // 
+            this.Image.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.Image.HeaderText = "Photo";
+            this.Image.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.Image.Name = "Image";
+            this.Image.ReadOnly = true;
+            this.Image.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Image.Width = 64;
             // 
             // Form1
             // 
@@ -334,5 +434,16 @@
         private GroupBox groupBox3;
         private Button btnFill;
         private DataGridView dataGridOrg;
+        private TextBox emailTextBox;
+        private Label label5;
+        private DataGridViewTextBoxColumn ID_org;
+        private DataGridViewTextBoxColumn OrganizationName;
+        private DataGridViewTextBoxColumn Address;
+        private DataGridViewTextBoxColumn ID;
+        private DataGridViewTextBoxColumn EmployeeName;
+        private DataGridViewTextBoxColumn Age;
+        private DataGridViewTextBoxColumn Email;
+        private DataGridViewComboBoxColumn OrganizationDrop;
+        private DataGridViewImageColumn Image;
     }
 }
