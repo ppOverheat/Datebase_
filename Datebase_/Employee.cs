@@ -16,7 +16,7 @@ namespace Datebase_
         public string Email { get; set; }
         public string Organization { get; set; }
         public Image Image { get; set; }
-        //public string Image { get; set; }
+        public string ImageURL { get; set; }
         public int OrganizationID { get; set; }
     }
 }

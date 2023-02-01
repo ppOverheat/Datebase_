@@ -9,23 +9,29 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
-//using System.Windows.Controls;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Net.Mail;
+using System.ComponentModel.Design;
+using System.Reflection;
+
 namespace Datebase_
 {
     public partial class Form1 : Form
     {
-        string dbName = "Db3";
-        string connectionStr = "Server=localhost;Integrated security=SSPI;database=master";
+        string dbName = "DB_employees";
+        string connectionStr = "Server=localhost;Database=DB_employees;Trusted_Connection = true";
+        string createStr = "Server=localhost;Integrated security=SSPI;database=master";
         string img_path = Application.StartupPath + "img/";
-        string input_path = Application.StartupPath + "input.txt";
-        string emails_path = Application.StartupPath + "emails.txt";
-
-        BindingSource bindingSource = new BindingSource();
-        BindingSource bindingSource_1 = new BindingSource();
+        string input_names_path = Application.StartupPath + "input.txt";
+        string input_emails_path = Application.StartupPath + "emails.txt";
+        string input_org_path = Application.StartupPath + "org_data.txt";
+        string image_path = "";
+        int selected_org = 0, selected_emp = 0;
         public Form1()
         {
             InitializeComponent();
-            if (!File.Exists(Application.StartupPath + dbName + ".mdf")) createBd();
+            if (!File.Exists(Application.StartupPath + dbName + ".mdf")) createDB();
             else setDataSource();
         }
         private void setDataSource()
@@ -35,40 +41,36 @@ namespace Datebase_
             {
                 connection.Open();
 
-                using (DbCommand command_ = new SqlCommand("DROP TABLE Employee"))
-                {
-                    command_.Connection = connection;
-                    command_.ExecuteNonQuery();
-                }
-                using (DbCommand command_ = new SqlCommand("DROP TABLE Organization"))
-                {
-                    command_.Connection = connection;
-                    command_.ExecuteNonQuery();
-                }
-
-
-                using (DbCommand command_ = new SqlCommand("CREATE TABLE Organization (" +
-                   "ID INT UNIQUE NOT NULL IDENTITY(1, 1)," +
-                   "Name VARCHAR(100) UNIQUE NOT NULL," +
-                   "Address VARCHAR(250));"))
-                {
-                    command_.Connection = connection;
-                    command_.ExecuteNonQuery();
-                }
-
-                using (DbCommand command_ = new SqlCommand("CREATE TABLE Employee (" +
-                    "ID INT UNIQUE NOT NULL IDENTITY(1, 1)," +
-                    "Name VARCHAR(100) NOT NULL," +
-                    "Age INT NOT NULL," +
-                    "ImageURL VARCHAR(250)," +
-                    "Email VARCHAR(100) UNIQUE NOT NULL," +
-                    "OrganizationID INT," +
-                    "FOREIGN KEY (OrganizationID) REFERENCES Organization (ID));"))
-                {
-                    command_.Connection = connection;
-                    command_.ExecuteNonQuery();
-                }
-
+                //using (DbCommand command_ = new SqlCommand("DROP TABLE Employee"))
+                //{
+                //    command_.Connection = connection;
+                //    command_.ExecuteNonQuery();
+                //}
+                //using (DbCommand command_ = new SqlCommand("DROP TABLE Organization"))
+                //{
+                //    command_.Connection = connection;
+                //    command_.ExecuteNonQuery();
+                //}
+                //using (DbCommand command_ = new SqlCommand("CREATE TABLE Organization (" +
+                //   "ID INT UNIQUE NOT NULL IDENTITY(1, 1)," +
+                //   "Name VARCHAR(100) UNIQUE NOT NULL," +
+                //   "Address VARCHAR(250));"))
+                //{
+                //    command_.Connection = connection;
+                //    command_.ExecuteNonQuery();
+                //}
+                //using (DbCommand command_ = new SqlCommand("CREATE TABLE Employee (" +
+                //    "ID INT UNIQUE NOT NULL IDENTITY(1, 1)," +
+                //    "Name VARCHAR(100) NOT NULL," +
+                //    "Age INT NOT NULL," +
+                //    "ImageURL VARCHAR(250)," +
+                //    "Email VARCHAR(100) UNIQUE NOT NULL," +
+                //    "OrganizationID INT," +
+                //    "FOREIGN KEY (OrganizationID) REFERENCES Organization (ID));"))
+                //{
+                //    command_.Connection = connection;
+                //    command_.ExecuteNonQuery();
+                //}
             }
             catch (System.Exception ex)
             {
@@ -83,143 +85,54 @@ namespace Datebase_
             }
             updateGrid();
         }
-        private void btnAddClick(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void nameTextBoxOnChange(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnAddImageClick(object sender, EventArgs e)
         {
-
+            OpenFileDialog op = new OpenFileDialog();
+            op.Title = "Select a picture";
+            op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png|" +
+              "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
+              "Portable Network Graphic (*.png)|*.png";
+            if (op.ShowDialog() == DialogResult.OK)
+            {
+                image_path = op.FileName;
+                pictureBox1.Image = System.Drawing.Image.FromFile(op.FileName);
+            }
         }
         private void updateOrganizationBox(List<Organization> organizations)
         {
-            int i = 1;
-            //OrganizationDrop.DataSource = 
+            OrganizationDrop.Items.Clear();
+            orgsBox.Items.Clear();
+            int i = 0;
+            ComboboxItem item = new ComboboxItem();
+            item.Text = "-Select-";
+            item.Value = i;
+            OrganizationDrop.Items.Add(item);
+            orgsBox.Items.Add(item);
             foreach (Organization organization in organizations)
             {
-                ComboboxItem item = new ComboboxItem();
+                i++;
+                item = new ComboboxItem();
                 item.Text = organization.Name;
                 item.Value = i;
                 OrganizationDrop.Items.Add(item);
-                //OrganizationDrop.
-                i++;
+                orgsBox.Items.Add(item);
             }
             OrganizationDrop.DisplayMember = "Text";
             OrganizationDrop.ValueMember = "Value";
+            orgsBox.DisplayMember = "Text";
+            orgsBox.ValueMember = "Value";
+            orgsBox.SelectedIndex = 0;
         }
-        void updateGrid()
+        private void updateOrganization()
         {
-            SqlConnection connection = new SqlConnection(connectionStr);
-            List<Organization> organizations = new List<Organization>();
-            List<Employee> employees = new List<Employee>();
-            try
-            {
-                connection.Open();
-                SqlCommand command_ = new SqlCommand("SELECT * FROM Organization", connection);
-                using (SqlDataReader reader = command_.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        Organization organization = new Organization
-                        {
-                            ID = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            Address = reader.GetString(2)
-                        };
-                        organizations.Add(organization);
-                    }
-                }
-                updateOrganizationBox(organizations);
-                SqlCommand command = new SqlCommand("SELECT * FROM Employee", connection);
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        Employee employee = new Employee
-                        {
-                            ID = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            Age = reader.GetInt32(2),
-                            Image = System.Drawing.Image.FromFile(reader.GetString(3)),
-                            Email = reader.GetString(4),
-                            Organization = organizations[reader.GetInt32(5) - 1].Name,
-                            OrganizationID = reader.GetInt32(5)
-                        };
-                        employees.Add(employee);
-                    }
-                }
-               
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            finally
-            {
-                if (connection.State == ConnectionState.Open)
-                {
-                    connection.Close();
-                }
-            }
-            int index = 0;
-            foreach (Employee employee in employees)
-            {
-                if (index != employees.Count - 1) dataGridView.Rows.Add(new DataGridViewRow());
-                dataGridView.Rows[index].Cells[0].Value = employee.ID;
-                dataGridView.Rows[index].Cells[1].Value = employee.Name;
-                dataGridView.Rows[index].Cells[2].Value = employee.Age;
-                dataGridView.Rows[index].Cells[3].Value = employee.Email;
-                dataGridView.Rows[index].Cells[4].Value = employee.OrganizationID;
-                dataGridView.Rows[index].Cells[5].Value = employee.Image;
-                index++;
-            }
-            index = 0;
-            foreach (Organization organization in organizations)
-            {
-                if (index != organizations.Count - 1) dataGridOrg.Rows.Add(new DataGridViewRow());
-                dataGridOrg.Rows[index].Cells[0].Value = organization.ID;
-                dataGridOrg.Rows[index].Cells[1].Value = organization.Name;
-                dataGridOrg.Rows[index].Cells[2].Value = organization.Address;
-                index++;
-            }
+            List<Organization> organizations = OrganizationData.updateOrganization();
+            updateOrgGridView(organizations);
+            updateOrganizationBox(organizations);
         }
-
-        private List<String> getEmails()
+        private void updateGrid()
         {
-            List<string> emails = new List<string>();
-            using (StreamReader reader = new StreamReader(emails_path))
-            {
-                reader.ReadLine();
-                string currentLine = reader.ReadLine();
-                while (currentLine != null)
-                {
-                    emails.Add(currentLine);
-                    currentLine = reader.ReadLine();
-                }
-            }
-            return emails;
-        }
-
-        private List<String> getEmployeesNames()
-        {
-            List<string> names = new List<string>();
-            using (StreamReader reader = new StreamReader(input_path))
-            {
-                reader.ReadLine();
-                string currentLine = reader.ReadLine();
-                while (currentLine != null)
-                {
-                    names.Add(currentLine);
-                    currentLine = reader.ReadLine();
-                }
-            }
-            return names;
+            updateOrganization();
+            updateDataGridView(EmployeeData.updateEmployees());
         }
         private int getRandomValue(int min, int max)
         {
@@ -228,39 +141,29 @@ namespace Datebase_
         private void btnFillDb(object sender, EventArgs e)
         {
             SqlConnection connection = new SqlConnection(connectionStr);
-
             try
             {
                 connection.Open();
-
-                using (DbCommand command_ = new SqlCommand("INSERT INTO Organization (Name, Address) " +
-                    "VALUES ('Blizzard Entertainment', '49 Sussex Dr. Herndon, VA 20170'), ('Ubisoft', '918 Maple St. Lawrence Township, NJ 08648'), " +
-                    "('Riot Games', '8888 3rd St. Everett, MA 02149'), ('Bethesda Softworks', '6 Shady Lane Clinton, MD 20735'), " +
-                    "('Nintendo', '9 County St. Lafayette, IN 47905'), ('Electronic Arts, Inc', '805 Vale Street Franklin, MA 02038')," +
-                    "('Xbox Game Studios', '96 Brickell Ave. Lapeer, MI 48446'), ('Warner Bros. Entertainment Inc', '436 Henry Dr. Mundelein, IL 60060')," +
-                    " ('RockStar Games', '67 Devon Drive Madison, AL 35758'), ('Valve Corporation', '218 Adams Ave. Auburn, NY 13021');"))
+                List<string> org_data = Common.getList(input_org_path);
+                int i = 0, j = 1;
+                for (i = 0; i < 20; i += 2)
                 {
-                    command_.Connection = connection;
-                    command_.ExecuteNonQuery();
+                    if (OrganizationData.addOrganization_(org_data[i], org_data[j], 0)) break;
+                    j += 2;
                 }
-                List<string> names = getEmployeesNames();
-                List<string> emails = getEmails();
+                List<string> names = Common.getList(input_names_path);
+                List<string> emails = Common.getList(input_emails_path);
                 int index = 0;
-                for (int i = 1; i < 3; i++)
+                for (i = 1; i < 3; i++) // i < 11
                 {
                     foreach (string name in names)
                     {
-                        char c = (char)i;
-                        using (DbCommand command_ = new SqlCommand("INSERT INTO Employee (Name, Age, ImageUrl, Email, OrganizationID) " +
-                        "VALUES ('"+ name +"'," + getRandomValue(18, 45) + ",'" + img_path + getRandomValue(0, 11) + ".jpg', '" + c + emails[index++] + "', " + i + ");"))
-                        {
-                            command_.Connection = connection;
-                            command_.ExecuteNonQuery();
-                        }
+                        if (EmployeeData.addEmployee_(name, getRandomValue(18, 45), img_path + getRandomValue(0, 11) + ".jpg", i + emails[index++], i, 0)) break;
                     }
                     index = 0;
                 }
-                MessageBox.Show("Successfully Inserted Data", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Please wait", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                updateGrid();
             }
             catch (System.Exception ex)
             {
@@ -273,34 +176,30 @@ namespace Datebase_
                     connection.Close();
                 }
             }
-            updateGrid();
         }
-
-        private void createBd()
+        private void createDB()
         {
-            SqlConnection connection = new SqlConnection(connectionStr);
-
+            SqlConnection connection = new SqlConnection(createStr);
             String str = GetDbCreationQuery();
-
             SqlCommand myCommand = new SqlCommand(str, connection);
             try
             {
                 connection.Open();
                 myCommand.ExecuteNonQuery();
-
                 using (DbCommand command_ = new SqlCommand("CREATE TABLE Organization (" +
-                   "ID INT UNIQUE NOT NULL IDENTITY(1, 1)," +
-                   "Name VARCHAR(100) UNIQUE NOT NULL);"))
+                    "ID INT UNIQUE NOT NULL IDENTITY(1, 1)," +
+                    "Name VARCHAR(100) UNIQUE NOT NULL," +
+                    "Address VARCHAR(250));"))
                 {
                     command_.Connection = connection;
                     command_.ExecuteNonQuery();
                 }
-
                 using (DbCommand command_ = new SqlCommand("CREATE TABLE Employee (" +
                     "ID INT UNIQUE NOT NULL IDENTITY(1, 1)," +
                     "Name VARCHAR(100) NOT NULL," +
                     "Age INT NOT NULL," +
                     "ImageURL VARCHAR(250)," +
+                    "Email VARCHAR(100) UNIQUE NOT NULL," +
                     "OrganizationID INT," +
                     "FOREIGN KEY (OrganizationID) REFERENCES Organization (ID));"))
                 {
@@ -321,16 +220,8 @@ namespace Datebase_
                 }
             }
         }
-
-        private void btnCreateDB_Click(object sender, EventArgs e)
+        private string GetDbCreationQuery()
         {
-            if (!File.Exists(Application.StartupPath + "Db.mdf")) createBd();
-            else MessageBox.Show("Database is created already", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-        static string GetDbCreationQuery()
-        {
-            string dbName = "Db3";
-
             string[] files = { Path.Combine(Application.StartupPath, dbName + ".mdf"),
                        Path.Combine(Application.StartupPath, dbName + ".ldf") };
 
@@ -352,40 +243,119 @@ namespace Datebase_
 
             return query;
         }
-
-        private void AddOrganizationClick(object sender, EventArgs e)
+        private void addOrganizationClick(object sender, EventArgs e)
         {
-            SqlConnection connection = new SqlConnection(connectionStr);
-
+            if (!OrganizationData.addOrganization_(nameOrgTextBox.Text, addressTextBox.Text, selected_org)) 
+            {
+                updateOrganization();
+                clearOrganizationForm(); 
+            }
+        }
+        private void updateEmployeeForm(Employee emp)
+        {
+            nameTextBox.Text = emp.Name;
+            ageTextBox.Text = "" + emp.Age;
+            emailTextBox.Text = emp.Email;
+            orgsBox.SelectedIndex = emp.OrganizationID;
+            pictureBox1.Image = emp.Image;
+            image_path = emp.ImageURL;
+        }
+        private void updateOrgForm(Organization organization)
+        {
+            nameOrgTextBox.Text = organization.Name;
+            addressTextBox.Text = organization.Address;
+        }
+        private void clearOrganizationForm()
+        {
+            nameOrgTextBox.Text = "";
+            addressTextBox.Text = "";
+            selected_org = 0;
+        }
+        private void clearEmployeeForm()
+        {
+            nameTextBox.Text = "";
+            ageTextBox.Text = "";
+            emailTextBox.Text = "";
+            orgsBox.SelectedIndex = 0;
+            pictureBox1.Image = null;
+            image_path = "";
+            selected_emp = 0;
+        }
+        private void updateDataGridView(List<Employee> employees)
+        {
+            int index = 0;
+            dataGridView.Rows.Clear();
+            foreach (Employee employee in employees)
+            {
+                if (index != employees.Count - 1) dataGridView.Rows.Add(new DataGridViewRow());
+                dataGridView.Rows[index].Cells[0].Value = employee.ID;
+                dataGridView.Rows[index].Cells[1].Value = employee.Name;
+                dataGridView.Rows[index].Cells[2].Value = employee.Age;
+                dataGridView.Rows[index].Cells[3].Value = employee.Email;
+                dataGridView.Rows[index].Cells[4].Value = employee.OrganizationID;
+                dataGridView.Rows[index].Cells[5].Value = employee.Image;
+                index++;
+            }
+        }
+        private void updateOrgGridView(List<Organization> organizations)
+        {
+            int index = 0;
+            dataGridOrg.Rows.Clear();
+            foreach (Organization organization in organizations)
+            {
+                if (index != organizations.Count - 1) dataGridOrg.Rows.Add(new DataGridViewRow());
+                dataGridOrg.Rows[index].Cells[0].Value = organization.ID;
+                dataGridOrg.Rows[index].Cells[1].Value = organization.Name;
+                dataGridOrg.Rows[index].Cells[2].Value = organization.Address;
+                index++;
+            }
+        }
+        private void btnAddEmployeeClick(object sender, EventArgs e)
+        {
             try
             {
-                connection.Open();
-
-                using (DbCommand command_ = new SqlCommand("INSERT INTO Organization (Name) VALUES ('"+""+"');"))
+                int value = Int32.Parse(ageTextBox.Text);
+                if (!EmployeeData.addEmployee_(nameTextBox.Text, value, image_path, emailTextBox.Text, orgsBox.SelectedIndex, selected_emp))
                 {
-                    command_.Connection = connection;
-                    command_.ExecuteNonQuery();
+                    updateDataGridView(EmployeeData.updateEmployees());
+                    clearEmployeeForm(); 
                 }
-                //MessageBox.Show("Successfully Inserted Data", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (System.Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Field 'Age' is not valid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            finally
-            {
-                if (connection.State == ConnectionState.Open)
-                {
-                    connection.Close();
-                }
-            }
-            updateGrid();
         }
-
-        private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void btnRemoveClick(object sender, EventArgs e)
         {
-
+            if (selected_org != 0) { removeItem("Organization", selected_org); clearOrganizationForm(); }
+            else if (selected_emp != 0) { removeItem("Employee", selected_emp); clearEmployeeForm(); }
+        }
+        private void removeItem(string table, int id)
+        {
+            if (!Common.removeRow(table, id))
+            {
+                updateGrid();
+            }
+        }
+        private void onCellOrgClick(object sender, DataGridViewCellEventArgs e)
+        {
+            clearEmployeeForm();
+            DataGridView gridView = (DataGridView)sender;
+            selected_org = (int)dataGridOrg.Rows[gridView.CurrentRow.Index].Cells[0].Value;
+            updateOrgForm(OrganizationData.selectOrganization(selected_org));
+        }
+        private void btnClearClick(object sender, EventArgs e)
+        {
+            clearEmployeeForm();
+            clearOrganizationForm();
+        }
+        private void onCellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            clearOrganizationForm();
+            DataGridView gridView = (DataGridView)sender;
+            selected_emp = (int)dataGridView.Rows[gridView.CurrentRow.Index].Cells[0].Value;
+            updateEmployeeForm(EmployeeData.selectEmployee(selected_emp));
         }
     }
-
 }
