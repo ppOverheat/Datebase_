@@ -20,13 +20,13 @@ namespace Datebase_
 {
     public partial class Form1 : Form
     {
-        string base_path = System.AppDomain.CurrentDomain.BaseDirectory;
+        string base_path = Application.StartupPath;
         string dbName = "DB_employees";
         string connectionStr = "Server=localhost;Database=DB_employees;Trusted_Connection = true";
-        string img_path = Application.StartupPath + "img/";
-        string input_names_path = Application.StartupPath + "input.txt";
-        string input_emails_path = Application.StartupPath + "emails.txt";
-        string input_org_path = Application.StartupPath + "org_data.txt";
+        string img_path = Application.StartupPath + "../../../resources/img/";
+        string input_names_path = Application.StartupPath + "../../../resources/input.txt";
+        string input_emails_path = Application.StartupPath + "../../../resources/emails.txt";
+        string input_org_path = Application.StartupPath + "../../../resources/org_data.txt";
         string image_path = "";
         int selected_org = 0, selected_emp = 0;
         List<string> emp_fields = new List<string>() { "ID", "Name", "Age", "Email", "Organization"};
@@ -108,7 +108,7 @@ namespace Datebase_
                 List<string> names = Common.GetList(input_names_path);
                 List<string> emails = Common.GetList(input_emails_path);
                 int index = 0;
-                for (i = 1; i < 11; i++)
+                for (i = 1; i < 3; i++)
                 {
                     foreach (string name in names)
                     {

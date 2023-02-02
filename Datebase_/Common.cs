@@ -12,7 +12,7 @@ namespace Datebase_
 {
     internal class Common
     {
-        static string base_path = System.AppDomain.CurrentDomain.BaseDirectory;
+        static string base_path = Application.StartupPath;
         static string dbName = "DB_employees";
         public static string connectionStr = "Server=localhost;Database=DB_employees;Trusted_Connection = true";
         static string createStr = "Server=localhost;Integrated security=SSPI;database=master";
