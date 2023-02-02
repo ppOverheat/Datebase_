@@ -88,6 +88,9 @@
             // dataGridView
             // 
             this.dataGridView.AllowUserToDeleteRows = false;
+            this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -97,11 +100,11 @@
             this.Email,
             this.OrganizationDrop,
             this.Image});
-            this.dataGridView.Location = new System.Drawing.Point(4, 48);
+            this.dataGridView.Location = new System.Drawing.Point(12, 48);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.ReadOnly = true;
             this.dataGridView.RowTemplate.Height = 25;
-            this.dataGridView.Size = new System.Drawing.Size(844, 460);
+            this.dataGridView.Size = new System.Drawing.Size(836, 445);
             this.dataGridView.TabIndex = 1;
             this.dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.onCellClick);
             // 
@@ -149,7 +152,7 @@
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(31, 304);
+            this.btnAdd.Location = new System.Drawing.Point(31, 329);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(139, 23);
             this.btnAdd.TabIndex = 2;
@@ -160,7 +163,7 @@
             // 
             // nameTextBox
             // 
-            this.nameTextBox.Location = new System.Drawing.Point(31, 61);
+            this.nameTextBox.Location = new System.Drawing.Point(31, 63);
             this.nameTextBox.Name = "nameTextBox";
             this.nameTextBox.Size = new System.Drawing.Size(139, 23);
             this.nameTextBox.TabIndex = 3;
@@ -168,7 +171,7 @@
             // nameLabel
             // 
             this.nameLabel.AutoSize = true;
-            this.nameLabel.Location = new System.Drawing.Point(31, 36);
+            this.nameLabel.Location = new System.Drawing.Point(28, 36);
             this.nameLabel.Name = "nameLabel";
             this.nameLabel.Size = new System.Drawing.Size(42, 15);
             this.nameLabel.TabIndex = 4;
@@ -177,7 +180,7 @@
             // ageLabel
             // 
             this.ageLabel.AutoSize = true;
-            this.ageLabel.Location = new System.Drawing.Point(31, 102);
+            this.ageLabel.Location = new System.Drawing.Point(31, 99);
             this.ageLabel.Name = "ageLabel";
             this.ageLabel.Size = new System.Drawing.Size(31, 15);
             this.ageLabel.TabIndex = 5;
@@ -192,6 +195,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.emailTextBox);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.groupBox3);
@@ -204,15 +209,15 @@
             this.groupBox1.Controls.Add(this.ageTextBox);
             this.groupBox1.Controls.Add(this.nameTextBox);
             this.groupBox1.Controls.Add(this.ageLabel);
-            this.groupBox1.Location = new System.Drawing.Point(871, 89);
+            this.groupBox1.Location = new System.Drawing.Point(871, 48);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(339, 384);
+            this.groupBox1.Size = new System.Drawing.Size(339, 445);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             // 
             // emailTextBox
             // 
-            this.emailTextBox.Location = new System.Drawing.Point(31, 191);
+            this.emailTextBox.Location = new System.Drawing.Point(31, 193);
             this.emailTextBox.Name = "emailTextBox";
             this.emailTextBox.Size = new System.Drawing.Size(139, 23);
             this.emailTextBox.TabIndex = 14;
@@ -220,7 +225,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(31, 160);
+            this.label5.Location = new System.Drawing.Point(31, 169);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(39, 15);
             this.label5.TabIndex = 13;
@@ -266,7 +271,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(31, 229);
+            this.label1.Location = new System.Drawing.Point(31, 237);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(78, 15);
             this.label1.TabIndex = 8;
@@ -278,22 +283,23 @@
             this.orgsBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.orgsBox.Items.AddRange(new object[] {
             "-Select-"});
-            this.orgsBox.Location = new System.Drawing.Point(31, 257);
+            this.orgsBox.Location = new System.Drawing.Point(31, 269);
             this.orgsBox.Name = "orgsBox";
             this.orgsBox.Size = new System.Drawing.Size(139, 23);
             this.orgsBox.TabIndex = 7;
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.addressTextBox);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.button1);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.nameOrgTextBox);
-            this.groupBox2.Location = new System.Drawing.Point(871, 506);
+            this.groupBox2.Location = new System.Drawing.Point(871, 536);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(339, 324);
+            this.groupBox2.Size = new System.Drawing.Size(339, 387);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             // 
@@ -351,9 +357,9 @@
             // 
             // btnRemove
             // 
-            this.btnRemove.Location = new System.Drawing.Point(225, 18);
+            this.btnRemove.Location = new System.Drawing.Point(225, 12);
             this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size(108, 30);
+            this.btnRemove.Size = new System.Drawing.Size(108, 24);
             this.btnRemove.TabIndex = 10;
             this.btnRemove.TabStop = false;
             this.btnRemove.Text = "Remove";
@@ -362,9 +368,9 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(113, 18);
+            this.btnClear.Location = new System.Drawing.Point(113, 12);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(106, 30);
+            this.btnClear.Size = new System.Drawing.Size(106, 24);
             this.btnClear.TabIndex = 11;
             this.btnClear.TabStop = false;
             this.btnClear.Text = "Deselect";
@@ -373,9 +379,9 @@
             // 
             // btnFill
             // 
-            this.btnFill.Location = new System.Drawing.Point(0, 18);
+            this.btnFill.Location = new System.Drawing.Point(0, 12);
             this.btnFill.Name = "btnFill";
-            this.btnFill.Size = new System.Drawing.Size(107, 30);
+            this.btnFill.Size = new System.Drawing.Size(107, 24);
             this.btnFill.TabIndex = 12;
             this.btnFill.TabStop = false;
             this.btnFill.Text = "Load data";
@@ -385,17 +391,19 @@
             // dataGridOrg
             // 
             this.dataGridOrg.AllowUserToDeleteRows = false;
+            this.dataGridOrg.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridOrg.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridOrg.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridOrg.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ID_org,
             this.OrganizationName,
             this.Address});
-            this.dataGridOrg.Location = new System.Drawing.Point(4, 539);
+            this.dataGridOrg.Location = new System.Drawing.Point(12, 536);
             this.dataGridOrg.Name = "dataGridOrg";
             this.dataGridOrg.ReadOnly = true;
             this.dataGridOrg.RowTemplate.Height = 25;
-            this.dataGridOrg.Size = new System.Drawing.Size(844, 301);
+            this.dataGridOrg.Size = new System.Drawing.Size(836, 387);
             this.dataGridOrg.TabIndex = 13;
             this.dataGridOrg.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.onCellOrgClick);
             // 
@@ -419,23 +427,26 @@
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.btnRemove);
             this.panel1.Controls.Add(this.btnClear);
             this.panel1.Controls.Add(this.btnFill);
             this.panel1.Location = new System.Drawing.Point(871, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(339, 66);
+            this.panel1.Size = new System.Drawing.Size(339, 39);
             this.panel1.TabIndex = 14;
             // 
             // panel2
             // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.orgSearchBox);
             this.panel2.Controls.Add(this.orgComboBoxSearch);
             this.panel2.Controls.Add(this.btnOrgSearch);
             this.panel2.Location = new System.Drawing.Point(4, 494);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(844, 39);
+            this.panel2.Size = new System.Drawing.Size(844, 36);
             this.panel2.TabIndex = 19;
             // 
             // label8
@@ -449,9 +460,9 @@
             // 
             // orgSearchBox
             // 
-            this.orgSearchBox.Location = new System.Drawing.Point(0, 13);
+            this.orgSearchBox.Location = new System.Drawing.Point(47, 13);
             this.orgSearchBox.Name = "orgSearchBox";
-            this.orgSearchBox.Size = new System.Drawing.Size(546, 23);
+            this.orgSearchBox.Size = new System.Drawing.Size(499, 23);
             this.orgSearchBox.TabIndex = 20;
             // 
             // orgComboBoxSearch
@@ -470,7 +481,7 @@
             // 
             // btnOrgSearch
             // 
-            this.btnOrgSearch.Location = new System.Drawing.Point(552, 12);
+            this.btnOrgSearch.Location = new System.Drawing.Point(563, 12);
             this.btnOrgSearch.Name = "btnOrgSearch";
             this.btnOrgSearch.Size = new System.Drawing.Size(75, 23);
             this.btnOrgSearch.TabIndex = 21;
@@ -500,9 +511,9 @@
             // 
             // empSearchBox
             // 
-            this.empSearchBox.Location = new System.Drawing.Point(0, 13);
+            this.empSearchBox.Location = new System.Drawing.Point(47, 13);
             this.empSearchBox.Name = "empSearchBox";
-            this.empSearchBox.Size = new System.Drawing.Size(546, 23);
+            this.empSearchBox.Size = new System.Drawing.Size(499, 23);
             this.empSearchBox.TabIndex = 20;
             // 
             // empComboBoxSearch
@@ -523,7 +534,7 @@
             // 
             // btnEmpSearch
             // 
-            this.btnEmpSearch.Location = new System.Drawing.Point(552, 12);
+            this.btnEmpSearch.Location = new System.Drawing.Point(563, 13);
             this.btnEmpSearch.Name = "btnEmpSearch";
             this.btnEmpSearch.Size = new System.Drawing.Size(75, 23);
             this.btnEmpSearch.TabIndex = 21;
@@ -535,8 +546,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(1222, 842);
+            this.ClientSize = new System.Drawing.Size(1222, 935);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);

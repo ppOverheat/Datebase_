@@ -33,11 +33,13 @@ namespace Datebase_
                     command_.Connection = connection;
                     command_.ExecuteNonQuery();
                 }
+                _ = Log.WriteLog("Added Item (Name = " + name + ") into Organization - " + DateTime.Now.ToString());
             }
             catch (System.Exception ex)
             {
                 error = true;
                 MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
             }
             finally
             {
@@ -62,12 +64,14 @@ namespace Datebase_
                     command_.Connection = connection;
                     command_.ExecuteNonQuery();
                 }
-                MessageBox.Show("Data has changed", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Data changed", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Updated Item (ID = " + selected_org + ") from Organization - " + DateTime.Now.ToString());
             }
             catch (System.Exception ex)
             {
                 error = true;
                 MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
             }
             finally
             {
@@ -158,6 +162,35 @@ namespace Datebase_
             }
             return organization;
         }
+        public static List<int> getIdBySearchString(string search)
+        {
+            List<int> ids = new List<int>();
+            SqlConnection connection = new SqlConnection(connectionStr);
+            try
+            {
+                connection.Open();
+                SqlCommand command_ = new SqlCommand("SELECT ID FROM Organization WHERE Name LIKE '" + search + "%';", connection);
+                using (SqlDataReader reader = command_.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ids.Add(reader.GetInt32(0));
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+            return ids;
+        }
         public static List<Organization> updateOrganization()
         {
             SqlConnection connection = new SqlConnection(connectionStr);
@@ -183,6 +216,7 @@ namespace Datebase_
             catch (System.Exception ex)
             {
                 MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
             }
             finally
             {

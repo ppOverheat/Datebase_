@@ -35,11 +35,13 @@ namespace Datebase_
                     command_.Connection = connection;
                     command_.ExecuteNonQuery();
                 }
+                _ = Log.WriteLog("Added Item (Name = " + name + ") into Employee - " + DateTime.Now.ToString());
             }
             catch (System.Exception ex)
             {
                 error = true;
                 MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
             }
             finally
             {
@@ -65,12 +67,14 @@ namespace Datebase_
                     command_.Connection = connection;
                     command_.ExecuteNonQuery();
                 }
-                MessageBox.Show("Data has changed", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Updated Item (ID = " + selected_emp + ") from Employee - " + DateTime.Now.ToString());
+                MessageBox.Show("Data changed", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (System.Exception ex)
             {
                 error = true;
                 MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
             }
             finally
             {
@@ -158,7 +162,57 @@ namespace Datebase_
                         employees.Add(employee);
                     }
                 }
-
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+            return employees;
+        }
+        private static List<Employee> GetEmployeesByOrg(string search)
+        {
+            List<Employee> employees = new List<Employee>();
+            SqlConnection connection = new SqlConnection(connectionStr);
+            List<int> ids = OrganizationData.getIdBySearchString(search);
+            try
+            {
+                connection.Open();
+                foreach (int id in ids)
+                {
+                    SqlCommand command_ = new SqlCommand("SELECT * FROM Employee WHERE OrganizationID="+id+";", connection);
+                    using (SqlDataReader reader = command_.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Image image = null;
+                            try
+                            {
+                                image = System.Drawing.Image.FromFile(reader.GetString(3));
+                            }
+                            catch
+                            { }
+                            Employee employee = new Employee()
+                            {
+                                ID = reader.GetInt32(0),
+                                Name = reader.GetString(1),
+                                Age = reader.GetInt32(2),
+                                Image = image,
+                                ImageURL = reader.GetString(3),
+                                Email = reader.GetString(4),
+                                OrganizationID = reader.GetInt32(5)
+                            };
+                            employees.Add(employee);
+                        }
+                    }
+                }
             }
             catch (System.Exception ex)
             {
@@ -176,6 +230,11 @@ namespace Datebase_
         public static List<Employee> searchEmployee(string property, string search)
         {
             List<Employee> employees = new List<Employee>();
+            string query = "SELECT * FROM Employee WHERE " + property + " LIKE '" + search + "%';";
+            if (property.Equals("Organization"))
+            {
+                return GetEmployeesByOrg(search);
+            }
             SqlConnection connection = new SqlConnection(connectionStr);
             try
             {

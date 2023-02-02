@@ -25,12 +25,14 @@ namespace Datebase_
                     command_.Connection = connection;
                     command_.ExecuteNonQuery();
                 }
-                MessageBox.Show("Data has removed", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Data removed", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Removed Item (ID = "+id+") from " + table + " - " + DateTime.Now.ToString());
             }
             catch (System.Exception ex)
             {
                 error = true;
                 MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
             }
             finally
             {

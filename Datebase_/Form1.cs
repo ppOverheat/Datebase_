@@ -122,6 +122,7 @@ namespace Datebase_
             catch (System.Exception ex)
             {
                 MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
             }
             finally
             {
@@ -161,10 +162,12 @@ namespace Datebase_
                     command_.ExecuteNonQuery();
                 }
                 MessageBox.Show("Database is Created Successfully", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Database" + dbName + " created - " + DateTime.Now.ToString());
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
             }
             finally
             {
