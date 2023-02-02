@@ -12,16 +12,16 @@ namespace Datebase_
 {
     internal class OrganizationData : Common
     {
-        public static bool addOrganization_(string name, string address, int selected_id)
+        public static bool AddOrganization_(string name, string address, int selected_id)
         {
             bool error = false;
-            if (selected_id == 0) error = addOrganization(name, address);
-            else error = changeOrganization(name, address, selected_id);
+            if (selected_id == 0) error = AddOrganization(name, address);
+            else error = ChangeOrganization(name, address, selected_id);
             return error;
         }
-        private static bool addOrganization(string name, string address)
+        private static bool AddOrganization(string name, string address)
         {
-            bool error = checkDataOrg(name, false);
+            bool error = CheckDataOrg(name, false);
             if (error) return error;
             SqlConnection connection = new SqlConnection(connectionStr);
             try
@@ -50,9 +50,9 @@ namespace Datebase_
             }
             return error;
         }
-        private static bool changeOrganization(string name, string address, int selected_org)
+        private static bool ChangeOrganization(string name, string address, int selected_org)
         {
-            bool error = checkDataOrg(name, true);
+            bool error = CheckDataOrg(name, true);
             if (error) return error;
             SqlConnection connection = new SqlConnection(connectionStr);
             try
@@ -82,14 +82,14 @@ namespace Datebase_
             }
             return error;
         }
-        private static bool checkDataOrg(string name, bool change)
+        private static bool CheckDataOrg(string name, bool change)
         {
             bool error = true;
             if (name == "")
             {
                 MessageBox.Show("Organization Name field is empty", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            else if (!change && hasOrg(name))
+            else if (!change && HasOrg(name))
             {
                 MessageBox.Show("Organization Name must be unique.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -99,7 +99,7 @@ namespace Datebase_
             }
             return error;
         }
-        private static bool hasOrg(string name)
+        private static bool HasOrg(string name)
         {
             bool result = false;
             SqlConnection connection = new SqlConnection(connectionStr);
@@ -128,7 +128,7 @@ namespace Datebase_
             }
             return result;
         }
-        public static Organization selectOrganization(int index)
+        public static Organization SelectOrganization(int index)
         {
             Organization organization = null;
             SqlConnection connection = new SqlConnection(connectionStr);
@@ -162,14 +162,14 @@ namespace Datebase_
             }
             return organization;
         }
-        public static List<int> getIdBySearchString(string search)
+        public static List<int> GetIdBySearchString(string search)
         {
             List<int> ids = new List<int>();
             SqlConnection connection = new SqlConnection(connectionStr);
             try
             {
                 connection.Open();
-                SqlCommand command_ = new SqlCommand("SELECT ID FROM Organization WHERE Name LIKE '" + search + "%';", connection);
+                SqlCommand command_ = new SqlCommand("SELECT ID FROM Organization WHERE Name LIKE '%" + search + "%';", connection);
                 using (SqlDataReader reader = command_.ExecuteReader())
                 {
                     while (reader.Read())
@@ -191,7 +191,7 @@ namespace Datebase_
             }
             return ids;
         }
-        public static List<Organization> updateOrganization()
+        public static List<Organization> UpdateOrganization()
         {
             SqlConnection connection = new SqlConnection(connectionStr);
             List<Organization> organizations = new List<Organization>();
@@ -227,14 +227,14 @@ namespace Datebase_
             }
             return organizations;
         }
-        public static List<Organization> searchOrganization(string property, string search)
+        public static List<Organization> SearchOrganization(string property, string search)
         {
             List<Organization> organizations = new List<Organization>();
             SqlConnection connection = new SqlConnection(connectionStr);
             try
             {
                 connection.Open();
-                SqlCommand command_ = new SqlCommand("SELECT * FROM Organization WHERE " + property + " LIKE '" + search + "%';", connection);
+                SqlCommand command_ = new SqlCommand("SELECT * FROM Organization WHERE " + property + " LIKE '%" + search + "%';", connection);
                 using (SqlDataReader reader = command_.ExecuteReader())
                 {
                     while (reader.Read())

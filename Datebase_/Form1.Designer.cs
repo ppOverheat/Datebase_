@@ -106,7 +106,7 @@
             this.dataGridView.RowTemplate.Height = 25;
             this.dataGridView.Size = new System.Drawing.Size(836, 445);
             this.dataGridView.TabIndex = 1;
-            this.dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.onCellClick);
+            this.dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellClick);
             // 
             // ID
             // 
@@ -159,7 +159,7 @@
             this.btnAdd.TabStop = false;
             this.btnAdd.Text = "Submit";
             this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAddEmployeeClick);
+            this.btnAdd.Click += new System.EventHandler(this.BtnAddEmployeeClick);
             // 
             // nameTextBox
             // 
@@ -266,7 +266,7 @@
             this.btnAddPhoto.TabIndex = 10;
             this.btnAddPhoto.Text = "Add photo";
             this.btnAddPhoto.UseVisualStyleBackColor = true;
-            this.btnAddPhoto.Click += new System.EventHandler(this.btnAddImageClick);
+            this.btnAddPhoto.Click += new System.EventHandler(this.BtnAddImageClick);
             // 
             // label1
             // 
@@ -337,7 +337,7 @@
             this.button1.TabStop = false;
             this.button1.Text = "Submit";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.addOrganizationClick);
+            this.button1.Click += new System.EventHandler(this.AddOrganizationClick);
             // 
             // label2
             // 
@@ -364,7 +364,7 @@
             this.btnRemove.TabStop = false;
             this.btnRemove.Text = "Remove";
             this.btnRemove.UseVisualStyleBackColor = true;
-            this.btnRemove.Click += new System.EventHandler(this.btnRemoveClick);
+            this.btnRemove.Click += new System.EventHandler(this.BtnRemoveClick);
             // 
             // btnClear
             // 
@@ -375,7 +375,7 @@
             this.btnClear.TabStop = false;
             this.btnClear.Text = "Deselect";
             this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClearClick);
+            this.btnClear.Click += new System.EventHandler(this.BtnClearClick);
             // 
             // btnFill
             // 
@@ -386,7 +386,7 @@
             this.btnFill.TabStop = false;
             this.btnFill.Text = "Load data";
             this.btnFill.UseVisualStyleBackColor = true;
-            this.btnFill.Click += new System.EventHandler(this.btnFillDb);
+            this.btnFill.Click += new System.EventHandler(this.BtnFillDb);
             // 
             // dataGridOrg
             // 
@@ -405,7 +405,7 @@
             this.dataGridOrg.RowTemplate.Height = 25;
             this.dataGridOrg.Size = new System.Drawing.Size(836, 387);
             this.dataGridOrg.TabIndex = 13;
-            this.dataGridOrg.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.onCellOrgClick);
+            this.dataGridOrg.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellOrgClick);
             // 
             // ID_org
             // 
@@ -487,7 +487,7 @@
             this.btnOrgSearch.TabIndex = 21;
             this.btnOrgSearch.Text = "Search";
             this.btnOrgSearch.UseVisualStyleBackColor = true;
-            this.btnOrgSearch.Click += new System.EventHandler(this.orgSearchClick);
+            this.btnOrgSearch.Click += new System.EventHandler(this.OrgSearchClick);
             // 
             // panel3
             // 
@@ -540,7 +540,7 @@
             this.btnEmpSearch.TabIndex = 21;
             this.btnEmpSearch.Text = "Search";
             this.btnEmpSearch.UseVisualStyleBackColor = true;
-            this.btnEmpSearch.Click += new System.EventHandler(this.empSearchClick);
+            this.btnEmpSearch.Click += new System.EventHandler(this.EmpSearchClick);
             // 
             // Form1
             // 

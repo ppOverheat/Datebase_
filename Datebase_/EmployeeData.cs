@@ -13,16 +13,16 @@ namespace Datebase_
 {
      internal class EmployeeData : Common
     {
-        public static bool addEmployee_(string name, int age, string img_url, string email, int org_id, int selected_id)
+        public static bool AddEmployee_(string name, int age, string img_url, string email, int org_id, int selected_id)
         {
             bool error = false;
-            if (selected_id == 0) error = addEmployee(name, age, img_url, email, org_id);
-            else error = changeEmployee(name, age, img_url, email, org_id, selected_id);
+            if (selected_id == 0) error = AddEmployee(name, age, img_url, email, org_id);
+            else error = ChangeEmployee(name, age, img_url, email, org_id, selected_id);
             return error;
         }
-        private static bool addEmployee(string name, int age, string img_url, string email, int org_id)
+        private static bool AddEmployee(string name, int age, string img_url, string email, int org_id)
         {
-            bool error = checkData(name, age, img_url, email, org_id, false);
+            bool error = CheckData(name, age, img_url, email, org_id, false);
             if (error) return error;
             SqlConnection connection = new SqlConnection(connectionStr);
             try
@@ -52,9 +52,9 @@ namespace Datebase_
             }
             return error;
         }
-        private static bool changeEmployee(string name, int age, string img_url, string email, int org_id, int selected_emp)
+        private static bool ChangeEmployee(string name, int age, string img_url, string email, int org_id, int selected_emp)
         {
-            bool error = checkData(name, age, img_url, email, org_id, true);
+            bool error = CheckData(name, age, img_url, email, org_id, true);
             if (error) return error;
             SqlConnection connection = new SqlConnection(connectionStr);
             try
@@ -85,7 +85,7 @@ namespace Datebase_
             }
             return error;
         }
-        public static Employee selectEmployee(int index)
+        public static Employee SelectEmployee(int index)
         {
             SqlConnection connection = new SqlConnection(connectionStr);
             Employee emp = null;
@@ -130,7 +130,7 @@ namespace Datebase_
             }
             return emp;
         }
-        public static List<Employee> updateEmployees()
+        public static List<Employee> UpdateEmployees()
         {
             SqlConnection connection = new SqlConnection(connectionStr);
             List<Employee> employees = new List<Employee>();
@@ -181,7 +181,7 @@ namespace Datebase_
         {
             List<Employee> employees = new List<Employee>();
             SqlConnection connection = new SqlConnection(connectionStr);
-            List<int> ids = OrganizationData.getIdBySearchString(search);
+            List<int> ids = OrganizationData.GetIdBySearchString(search);
             try
             {
                 connection.Open();
@@ -227,10 +227,10 @@ namespace Datebase_
             }
             return employees;
         }
-        public static List<Employee> searchEmployee(string property, string search)
+        public static List<Employee> SearchEmployee(string property, string search)
         {
             List<Employee> employees = new List<Employee>();
-            string query = "SELECT * FROM Employee WHERE " + property + " LIKE '" + search + "%';";
+            string query = "SELECT * FROM Employee WHERE " + property + " LIKE '%" + search + "%';";
             if (property.Equals("Organization"))
             {
                 return GetEmployeesByOrg(search);
@@ -239,7 +239,7 @@ namespace Datebase_
             try
             {
                 connection.Open();
-                SqlCommand command_ = new SqlCommand("SELECT * FROM Employee WHERE " + property + " LIKE '" + search + "%';", connection);
+                SqlCommand command_ = new SqlCommand("SELECT * FROM Employee WHERE " + property + " LIKE '%" + search + "%';", connection);
                 using (SqlDataReader reader = command_.ExecuteReader())
                 {
                     while (reader.Read())
@@ -278,7 +278,7 @@ namespace Datebase_
             }
             return employees;
         }
-        private static bool checkData(string name, int age, string img_url, string email, int org_id, bool change)
+        private static bool CheckData(string name, int age, string img_url, string email, int org_id, bool change)
         {
             bool error = true;
             if (name == "")
@@ -289,11 +289,11 @@ namespace Datebase_
             {
                 MessageBox.Show("Select the Organization.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            else if (!isValidEmail(email))
+            else if (!IsValidEmail(email))
             {
                 MessageBox.Show("Employee's Email is not valid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            else if (!change && hasMail(email))
+            else if (!change && HasMail(email))
             {
                 MessageBox.Show("Employee's Email must be unique.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -307,7 +307,7 @@ namespace Datebase_
             }
             return error;
         }
-        private static bool hasMail(string mail)
+        private static bool HasMail(string mail)
         {
             bool result = false;
             SqlConnection connection = new SqlConnection(connectionStr);
@@ -336,7 +336,7 @@ namespace Datebase_
             }
             return result;
         }
-        private static bool isValidEmail(string email)
+        private static bool IsValidEmail(string email)
         {
             try
             {
