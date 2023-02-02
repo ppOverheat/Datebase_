@@ -12,7 +12,6 @@ namespace Datebase_
     internal class Common
     {
         public static string connectionStr = "Server=localhost;Database=DB_employees;Trusted_Connection = true";
-
         public static bool removeRow(string table, int id)
         {
             bool error = false;
@@ -55,6 +54,10 @@ namespace Datebase_
                 }
             }
             return names;
+        }
+        public static int getRandomValue(int min, int max)
+        {
+            return new Random().Next(min, max);
         }
     }
 }

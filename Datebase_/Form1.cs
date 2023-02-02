@@ -14,6 +14,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Net.Mail;
 using System.ComponentModel.Design;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
 
 namespace Datebase_
 {
@@ -28,61 +29,18 @@ namespace Datebase_
         string input_org_path = Application.StartupPath + "org_data.txt";
         string image_path = "";
         int selected_org = 0, selected_emp = 0;
+        List<string> emp_fields = new List<string>() { "ID", "Name", "Age", "Email", "Organization"};
+        List<string> org_fields = new List<string>() { "ID", "Name", "Address" };
         public Form1()
         {
             InitializeComponent();
             if (!File.Exists(Application.StartupPath + dbName + ".mdf")) createDB();
             else setDataSource();
+            empComboBoxSearch.SelectedIndex = 0;
+            orgComboBoxSearch.SelectedIndex = 0;
         }
         private void setDataSource()
         {
-            SqlConnection connection = new SqlConnection(connectionStr);
-            try
-            {
-                connection.Open();
-
-                //using (DbCommand command_ = new SqlCommand("DROP TABLE Employee"))
-                //{
-                //    command_.Connection = connection;
-                //    command_.ExecuteNonQuery();
-                //}
-                //using (DbCommand command_ = new SqlCommand("DROP TABLE Organization"))
-                //{
-                //    command_.Connection = connection;
-                //    command_.ExecuteNonQuery();
-                //}
-                //using (DbCommand command_ = new SqlCommand("CREATE TABLE Organization (" +
-                //   "ID INT UNIQUE NOT NULL IDENTITY(1, 1)," +
-                //   "Name VARCHAR(100) UNIQUE NOT NULL," +
-                //   "Address VARCHAR(250));"))
-                //{
-                //    command_.Connection = connection;
-                //    command_.ExecuteNonQuery();
-                //}
-                //using (DbCommand command_ = new SqlCommand("CREATE TABLE Employee (" +
-                //    "ID INT UNIQUE NOT NULL IDENTITY(1, 1)," +
-                //    "Name VARCHAR(100) NOT NULL," +
-                //    "Age INT NOT NULL," +
-                //    "ImageURL VARCHAR(250)," +
-                //    "Email VARCHAR(100) UNIQUE NOT NULL," +
-                //    "OrganizationID INT," +
-                //    "FOREIGN KEY (OrganizationID) REFERENCES Organization (ID));"))
-                //{
-                //    command_.Connection = connection;
-                //    command_.ExecuteNonQuery();
-                //}
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            finally
-            {
-                if (connection.State == ConnectionState.Open)
-                {
-                    connection.Close();
-                }
-            }
             updateGrid();
         }
         private void btnAddImageClick(object sender, EventArgs e)
@@ -134,10 +92,6 @@ namespace Datebase_
             updateOrganization();
             updateDataGridView(EmployeeData.updateEmployees());
         }
-        private int getRandomValue(int min, int max)
-        {
-            return new Random().Next(min, max);
-        }
         private void btnFillDb(object sender, EventArgs e)
         {
             SqlConnection connection = new SqlConnection(connectionStr);
@@ -154,11 +108,11 @@ namespace Datebase_
                 List<string> names = Common.getList(input_names_path);
                 List<string> emails = Common.getList(input_emails_path);
                 int index = 0;
-                for (i = 1; i < 3; i++) // i < 11
+                for (i = 1; i < 11; i++)
                 {
                     foreach (string name in names)
                     {
-                        if (EmployeeData.addEmployee_(name, getRandomValue(18, 45), img_path + getRandomValue(0, 11) + ".jpg", i + emails[index++], i, 0)) break;
+                        if (EmployeeData.addEmployee_(name, Common.getRandomValue(18, 45), img_path + Common.getRandomValue(0, 11) + ".jpg", i + emails[index++], i, 0)) break;
                     }
                     index = 0;
                 }
@@ -224,7 +178,6 @@ namespace Datebase_
         {
             string[] files = { Path.Combine(Application.StartupPath, dbName + ".mdf"),
                        Path.Combine(Application.StartupPath, dbName + ".ldf") };
-
             string query = "CREATE DATABASE " + dbName +
                 " ON PRIMARY" +
                 " (NAME = " + dbName + "_data," +
@@ -232,7 +185,6 @@ namespace Datebase_
                 " SIZE = 3MB," +
                 " MAXSIZE = 10MB," +
                 " FILEGROWTH = 10%)" +
-
                 " LOG ON" +
                 " (NAME = " + dbName + "_log," +
                 " FILENAME = '" + files[1] + "'," +
@@ -240,7 +192,6 @@ namespace Datebase_
                 " MAXSIZE = 5MB," +
                 " FILEGROWTH = 10%)" +
                 ";";
-
             return query;
         }
         private void addOrganizationClick(object sender, EventArgs e)
@@ -349,6 +300,27 @@ namespace Datebase_
         {
             clearEmployeeForm();
             clearOrganizationForm();
+        }
+        private void empSearchClick(object sender, EventArgs e)
+        {
+            if (empComboBoxSearch.SelectedIndex != 0)
+            {
+                updateDataGridView(EmployeeData.searchEmployee(emp_fields[empComboBoxSearch.SelectedIndex - 1], empSearchBox.Text));
+            } else
+            {
+                MessageBox.Show("Select the field", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        private void orgSearchClick(object sender, EventArgs e)
+        {
+            if (orgComboBoxSearch.SelectedIndex != 0)
+            {
+                updateOrgGridView(OrganizationData.searchOrganization(org_fields[orgComboBoxSearch.SelectedIndex - 1], orgSearchBox.Text));
+            }
+            else
+            {
+                MessageBox.Show("Select the field", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
         private void onCellClick(object sender, DataGridViewCellEventArgs e)
         {

@@ -179,7 +179,41 @@ namespace Datebase_
                         organizations.Add(organization);
                     }
                 }
-                //updateOrganizationBox(organizations);
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+            return organizations;
+        }
+        public static List<Organization> searchOrganization(string property, string search)
+        {
+            List<Organization> organizations = new List<Organization>();
+            SqlConnection connection = new SqlConnection(connectionStr);
+            try
+            {
+                connection.Open();
+                SqlCommand command_ = new SqlCommand("SELECT * FROM Organization WHERE " + property + " LIKE '" + search + "%';", connection);
+                using (SqlDataReader reader = command_.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Organization organization = new Organization
+                        {
+                            ID = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            Address = reader.GetString(2)
+                        };
+                        organizations.Add(organization);
+                    }
+                }
             }
             catch (System.Exception ex)
             {

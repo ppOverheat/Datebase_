@@ -275,6 +275,7 @@
             // orgsBox
             // 
             this.orgsBox.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
+            this.orgsBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.orgsBox.Items.AddRange(new object[] {
             "-Select-"});
             this.orgsBox.Location = new System.Drawing.Point(31, 257);
@@ -455,7 +456,13 @@
             // 
             // orgComboBoxSearch
             // 
+            this.orgComboBoxSearch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.orgComboBoxSearch.FormattingEnabled = true;
+            this.orgComboBoxSearch.Items.AddRange(new object[] {
+            "-Select-",
+            "ID",
+            "Name",
+            "Address"});
             this.orgComboBoxSearch.Location = new System.Drawing.Point(702, 12);
             this.orgComboBoxSearch.Name = "orgComboBoxSearch";
             this.orgComboBoxSearch.Size = new System.Drawing.Size(142, 23);
@@ -469,6 +476,7 @@
             this.btnOrgSearch.TabIndex = 21;
             this.btnOrgSearch.Text = "Search";
             this.btnOrgSearch.UseVisualStyleBackColor = true;
+            this.btnOrgSearch.Click += new System.EventHandler(this.orgSearchClick);
             // 
             // panel3
             // 
@@ -499,7 +507,15 @@
             // 
             // empComboBoxSearch
             // 
+            this.empComboBoxSearch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.empComboBoxSearch.FormattingEnabled = true;
+            this.empComboBoxSearch.Items.AddRange(new object[] {
+            "-Select-",
+            "ID",
+            "Name",
+            "Age",
+            "Email",
+            "Organization"});
             this.empComboBoxSearch.Location = new System.Drawing.Point(702, 12);
             this.empComboBoxSearch.Name = "empComboBoxSearch";
             this.empComboBoxSearch.Size = new System.Drawing.Size(142, 23);
@@ -513,6 +529,7 @@
             this.btnEmpSearch.TabIndex = 21;
             this.btnEmpSearch.Text = "Search";
             this.btnEmpSearch.UseVisualStyleBackColor = true;
+            this.btnEmpSearch.Click += new System.EventHandler(this.empSearchClick);
             // 
             // Form1
             // 
