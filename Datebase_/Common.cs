@@ -155,7 +155,7 @@ namespace Datebase_
                     command_.ExecuteNonQuery();
                 }
                 MessageBox.Show("Database is Created Successfully", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                _ = Log.WriteLog("Database" + dbName + " created - " + DateTime.Now.ToString());
+                _ = Log.WriteLog("Database " + dbName + " created - " + DateTime.Now.ToString());
                 CreateTables();
             }
             catch (System.Exception ex)

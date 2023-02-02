@@ -108,7 +108,7 @@ namespace Datebase_
                 List<string> names = Common.GetList(input_names_path);
                 List<string> emails = Common.GetList(input_emails_path);
                 int index = 0;
-                for (i = 1; i < 3; i++)
+                for (i = 1; i < 11; i++)
                 {
                     foreach (string name in names)
                     {
