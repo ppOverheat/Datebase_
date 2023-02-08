@@ -28,7 +28,7 @@ namespace Datebase_
             try
             {
                 connection.Open();
-
+                //string img_path = CpyImgToRes(img_url);
                 using (DbCommand command_ = new SqlCommand("INSERT INTO Employee (Name, Age, ImageUrl, Email, OrganizationID) VALUES " +
                     "('" + name + "'," + age + ",'" + img_url + "','" + email + "'," + org_id + ");"))
                 {
@@ -60,7 +60,7 @@ namespace Datebase_
             try
             {
                 connection.Open();
-
+               // string img_path = CpyImgToRes(img_url);
                 using (DbCommand command_ = new SqlCommand("UPDATE Employee SET Name = '" + name + "', Age = " + age + "," +
                     " ImageURL = '" + img_url + "', Email = '" + email + "', OrganizationID = " + org_id + " WHERE ID = " + selected_emp + ";"))
                 {
@@ -211,6 +211,52 @@ namespace Datebase_
                             };
                             employees.Add(employee);
                         }
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+            return employees;
+        }
+        public static List<Employee> SelectByOrg(int id)
+        {
+            List<Employee> employees = new List<Employee>();
+            SqlConnection connection = new SqlConnection(connectionStr);
+            try
+            {
+                connection.Open();
+                SqlCommand command_ = new SqlCommand("SELECT * FROM Employee WHERE OrganizationID="+ id +";", connection);
+                using (SqlDataReader reader = command_.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Image image = null;
+                        try
+                        {
+                            image = System.Drawing.Image.FromFile(reader.GetString(3));
+                        }
+                        catch
+                        { }
+                        Employee employee = new Employee()
+                        {
+                            ID = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            Age = reader.GetInt32(2),
+                            Image = image,
+                            ImageURL = reader.GetString(3),
+                            Email = reader.GetString(4),
+                            OrganizationID = reader.GetInt32(5)
+                        };
+                        employees.Add(employee);
                     }
                 }
             }

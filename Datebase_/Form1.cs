@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Xml.Linq;
 using System.Data.Common;
 using Microsoft.VisualBasic;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Forms;
 using System.Drawing;
@@ -20,13 +21,10 @@ namespace Datebase_
 {
     public partial class Form1 : Form
     {
-        string base_path = Application.StartupPath;
-        string dbName = "DB_employees";
-        string connectionStr = "Server=localhost;Database=DB_employees;Trusted_Connection = true";
-        string img_path = Application.StartupPath + "../../../resources/img/";
-        string input_names_path = Application.StartupPath + "../../../resources/input.txt";
-        string input_emails_path = Application.StartupPath + "../../../resources/emails.txt";
-        string input_org_path = Application.StartupPath + "../../../resources/org_data.txt";
+        string img_path = "img/";
+        string input_names_path = "input.txt";
+        string input_emails_path = "emails.txt";
+        string input_org_path = "org_data.txt";
         string image_path = "";
         int selected_org = 0, selected_emp = 0;
         List<string> emp_fields = new List<string>() { "ID", "Name", "Age", "Email", "Organization"};
@@ -34,12 +32,16 @@ namespace Datebase_
         public Form1()
         {
             InitializeComponent();
-            if (!File.Exists(base_path + dbName + ".mdf")) Common.CreateDB();
-            else SetDataSource();
             empComboBoxSearch.SelectedIndex = 0;
             orgComboBoxSearch.SelectedIndex = 0;
+            EmptyContent();
         }
-        private void SetDataSource()
+        private void EmptyContent()
+        {
+            Common.EmptyTableContent("Employee");
+            Common.EmptyTableContent("Organization");
+        }
+        private void OnLoad(object sender, EventArgs e)
         {
             UpdateGrid();
         }
@@ -47,9 +49,7 @@ namespace Datebase_
         {
             OpenFileDialog op = new OpenFileDialog();
             op.Title = "Select a picture";
-            op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png|" +
-              "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
-              "Portable Network Graphic (*.png)|*.png";
+            op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|Portable Network Graphic (*.png)|*.png";
             if (op.ShowDialog() == DialogResult.OK)
             {
                 image_path = op.FileName;
@@ -60,9 +60,9 @@ namespace Datebase_
         {
             OrganizationDrop.Items.Clear();
             orgsBox.Items.Clear();
-            int i = 0;
             ComboboxItem item = new ComboboxItem();
             item.Text = "-Select-";
+            int i = 0;
             item.Value = i;
             OrganizationDrop.Items.Add(item);
             orgsBox.Items.Add(item);
@@ -81,38 +81,82 @@ namespace Datebase_
             orgsBox.ValueMember = "Value";
             orgsBox.SelectedIndex = 0;
         }
+        private int GetIdByNameDrop(string name)
+        {
+            int id = 0;
+            foreach(ComboboxItem item in OrganizationDrop.Items)
+            {
+                if (name.Equals((string)item.Text)) return id;
+                id++;
+            }
+            return id;
+        }
+        private string GetNameByIdDrop(int id)
+        {
+            string name = "";
+            int index = 0;
+            foreach (ComboboxItem item in OrganizationDrop.Items)
+            {
+                if (id == index) return item.Text;
+                index++;
+            }
+            
+            return name;
+        }
         private void UpdateOrganization()
         {
-            List<Organization> organizations = OrganizationData.UpdateOrganization();
-            UpdateOrgGridView(organizations);
-            UpdateOrganizationBox(organizations);
+            this.Invoke(new Action(() => {
+                List<Organization> organizations = OrganizationData.UpdateOrganization();
+                UpdateOrgGridView(organizations);
+                UpdateOrganizationBox(organizations);
+            }));
+        }
+        private int GetDropID(int id)
+        {
+            string s = OrganizationData.GetNameByID(id);
+            return GetIdByNameDrop(s);
+        }
+        private int GetIDByActual(int id)
+        {
+            return OrganizationData.GetIdByName(GetNameByIdDrop(id));
+        }
+        void UpdateGridThread()
+        {
+            Action a = new Action(() =>
+            {
+                new Thread(UpdateOrganization).Start();
+                UpdateDataGridView(EmployeeData.UpdateEmployees());
+            });
+            this.Invoke(a);
         }
         private void UpdateGrid()
         {
-            UpdateOrganization();
-            UpdateDataGridView(EmployeeData.UpdateEmployees());
+           new Thread(UpdateGridThread).Start();
         }
         private void BtnFillDb(object sender, EventArgs e)
         {
-            SqlConnection connection = new SqlConnection(connectionStr);
             try
             {
-                connection.Open();
-                List<string> org_data = Common.GetList(input_org_path);
+                List<string> org_data = Common.GetList(Common.res_path + input_org_path);
                 int i = 0, j = 1;
                 for (i = 0; i < 20; i += 2)
                 {
                     if (OrganizationData.AddOrganization_(org_data[i], org_data[j], 0)) break;
                     j += 2;
                 }
-                List<string> names = Common.GetList(input_names_path);
-                List<string> emails = Common.GetList(input_emails_path);
+                new Thread(UpdateOrganization).Start();
+                List<string> names = Common.GetList(Common.res_path + input_names_path);
+                List<string> emails = Common.GetList(Common.res_path + input_emails_path);
+                List<int> ids = OrganizationData.GetAllID();
                 int index = 0;
-                for (i = 1; i < 11; i++)
+                j = 0;
+                for (i = 1; i < 3; i++)
                 {
                     foreach (string name in names)
                     {
-                        if (EmployeeData.AddEmployee_(name, Common.GetRandomValue(18, 45), img_path + Common.GetRandomValue(0, 11) + ".jpg", i + emails[index++], i, 0)) break;
+                        if (EmployeeData.AddEmployee_(name, Common.GetRandomValue(18, 45), Common.res_path + img_path + Common.GetRandomValue(0, 11) + ".jpg", i + emails[index++], ids[j], 0)) break;
+                        if (j == ids.Count - 1) j = 0;
+                        else j++;
                     }
                     index = 0;
                 }
@@ -123,13 +167,6 @@ namespace Datebase_
             {
                 MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
-            }
-            finally
-            {
-                if (connection.State == ConnectionState.Open)
-                {
-                    connection.Close();
-                }
             }
         }
         private void AddOrganizationClick(object sender, EventArgs e)
@@ -145,7 +182,7 @@ namespace Datebase_
             nameTextBox.Text = emp.Name;
             ageTextBox.Text = "" + emp.Age;
             emailTextBox.Text = emp.Email;
-            orgsBox.SelectedIndex = emp.OrganizationID;
+            orgsBox.SelectedIndex = GetDropID(emp.OrganizationID);
             pictureBox1.Image = emp.Image;
             image_path = emp.ImageURL;
         }
@@ -181,7 +218,7 @@ namespace Datebase_
                 dataGridView.Rows[index].Cells[1].Value = employee.Name;
                 dataGridView.Rows[index].Cells[2].Value = employee.Age;
                 dataGridView.Rows[index].Cells[3].Value = employee.Email;
-                dataGridView.Rows[index].Cells[4].Value = employee.OrganizationID;
+                dataGridView.Rows[index].Cells[4].Value = GetDropID(employee.OrganizationID);
                 dataGridView.Rows[index].Cells[5].Value = employee.Image;
                 index++;
             }
@@ -204,7 +241,7 @@ namespace Datebase_
             try
             {
                 int value = Int32.Parse(ageTextBox.Text);
-                if (!EmployeeData.AddEmployee_(nameTextBox.Text, value, image_path, emailTextBox.Text, orgsBox.SelectedIndex, selected_emp))
+                if (!EmployeeData.AddEmployee_(nameTextBox.Text, value, image_path, emailTextBox.Text, GetIDByActual(orgsBox.SelectedIndex), selected_emp))//!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 {
                     UpdateDataGridView(EmployeeData.UpdateEmployees());
                     ClearEmployeeForm(); 
@@ -224,15 +261,25 @@ namespace Datebase_
         {
             if (!Common.RemoveRow(table, id))
             {
-                UpdateGrid();
+                if (table.Equals("Organization")) UpdateGrid();
+                else UpdateDataGridView(EmployeeData.UpdateEmployees());
             }
         }
         private void OnCellOrgClick(object sender, DataGridViewCellEventArgs e)
         {
-            ClearEmployeeForm();
             DataGridView gridView = (DataGridView)sender;
-            selected_org = (int)dataGridOrg.Rows[gridView.CurrentRow.Index].Cells[0].Value;
-            UpdateOrgForm(OrganizationData.SelectOrganization(selected_org));
+            if (gridView.Rows[gridView.CurrentRow.Index].Cells[0].Value != null)
+            {
+                for (int i = 0; i < dataGridOrg.Rows[gridView.CurrentRow.Index].Cells.Count; i++)
+                {
+                    dataGridOrg.Rows[gridView.CurrentRow.Index].Cells[i].Selected = true;
+                }
+                ClearEmployeeForm();
+                int selected = (int)dataGridOrg.Rows[gridView.CurrentRow.Index].Cells[0].Value;
+                selected_org = selected;
+                UpdateOrgForm(OrganizationData.SelectOrganization(selected_org));
+                UpdateDataGridView(EmployeeData.SelectByOrg(selected_org));
+            }
         }
         private void BtnClearClick(object sender, EventArgs e)
         {
@@ -264,8 +311,15 @@ namespace Datebase_
         {
             ClearOrganizationForm();
             DataGridView gridView = (DataGridView)sender;
-            selected_emp = (int)dataGridView.Rows[gridView.CurrentRow.Index].Cells[0].Value;
-            UpdateEmployeeForm(EmployeeData.SelectEmployee(selected_emp));
+            if (dataGridView.Rows[gridView.CurrentRow.Index].Cells[0].Value != null)
+            {
+                for (int i = 0; i < dataGridView.Rows[gridView.CurrentRow.Index].Cells.Count; i++)
+                {
+                    dataGridView.Rows[gridView.CurrentRow.Index].Cells[i].Selected = true;
+                }
+                selected_emp = (int)dataGridView.Rows[gridView.CurrentRow.Index].Cells[0].Value;
+                UpdateEmployeeForm(EmployeeData.SelectEmployee(selected_emp));
+            }
         }
     }
 }

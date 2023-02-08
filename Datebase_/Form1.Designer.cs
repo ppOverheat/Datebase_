@@ -116,7 +116,7 @@
             // 
             // EmployeeName
             // 
-            this.EmployeeName.HeaderText = "Name";
+            this.EmployeeName.HeaderText = "Employee Name";
             this.EmployeeName.Name = "EmployeeName";
             this.EmployeeName.ReadOnly = true;
             // 
@@ -415,7 +415,7 @@
             // 
             // OrganizationName
             // 
-            this.OrganizationName.HeaderText = "Name";
+            this.OrganizationName.HeaderText = "Organization Name";
             this.OrganizationName.Name = "OrganizationName";
             this.OrganizationName.ReadOnly = true;
             // 
@@ -558,6 +558,7 @@
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "Form1";
+            this.Load += new System.EventHandler(this.OnLoad);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -602,15 +603,6 @@
         private Label label5;
         private Label label6;
         private TextBox addressTextBox;
-        private DataGridViewTextBoxColumn ID_org;
-        private DataGridViewTextBoxColumn OrganizationName;
-        private DataGridViewTextBoxColumn Address;
-        private DataGridViewTextBoxColumn ID;
-        private DataGridViewTextBoxColumn EmployeeName;
-        private DataGridViewTextBoxColumn Age;
-        private DataGridViewTextBoxColumn Email;
-        private DataGridViewComboBoxColumn OrganizationDrop;
-        private DataGridViewImageColumn Image;
         private Panel panel1;
         private Panel panel2;
         private Label label8;
@@ -622,5 +614,14 @@
         private TextBox empSearchBox;
         private ComboBox empComboBoxSearch;
         private Button btnEmpSearch;
+        private DataGridViewTextBoxColumn ID;
+        private DataGridViewTextBoxColumn EmployeeName;
+        private DataGridViewTextBoxColumn Age;
+        private DataGridViewTextBoxColumn Email;
+        private DataGridViewComboBoxColumn OrganizationDrop;
+        private DataGridViewImageColumn Image;
+        private DataGridViewTextBoxColumn ID_org;
+        private DataGridViewTextBoxColumn OrganizationName;
+        private DataGridViewTextBoxColumn Address;
     }
 }

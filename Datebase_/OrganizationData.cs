@@ -19,6 +19,35 @@ namespace Datebase_
             else error = ChangeOrganization(name, address, selected_id);
             return error;
         }
+        public static string GetNameByID(int organizationId)
+        {
+            SqlConnection connection = new SqlConnection(connectionStr);
+            string value = "";
+            try
+            {
+                connection.Open();
+                SqlCommand command_ = new SqlCommand("SELECT Name FROM Organization WHERE ID=" + organizationId + ";", connection);
+                using (SqlDataReader reader = command_.ExecuteReader())
+                {
+                    while(reader.Read())
+                    {
+                        value = reader.GetString(0);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+            return value;
+        }
         private static bool AddOrganization(string name, string address)
         {
             bool error = CheckDataOrg(name, false);
@@ -128,6 +157,64 @@ namespace Datebase_
             }
             return result;
         }
+        public static List<int> GetAllID()
+        {
+            SqlConnection connection = new SqlConnection(connectionStr);
+            List<int> ids = new List<int>();
+            try
+            {
+                connection.Open();
+                SqlCommand command_ = new SqlCommand("SELECT ID from Organization;", connection);
+                using (SqlDataReader reader = command_.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ids.Add(reader.GetInt32(0));
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+            return ids;
+        }
+        public static int GetIdByName(string name)
+        {
+            int id = 0;
+            SqlConnection connection = new SqlConnection(connectionStr);
+            try
+            {
+                connection.Open();
+                SqlCommand command_ = new SqlCommand("SELECT ID FROM Organization WHERE Name='"+name+"';", connection);
+                using (SqlDataReader reader = command_.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        id = reader.GetInt32(0);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+            return id;
+        }
         public static Organization SelectOrganization(int index)
         {
             Organization organization = null;
@@ -174,7 +261,7 @@ namespace Datebase_
                 {
                     while (reader.Read())
                     {
-                        ids.Add(reader.GetInt32(0));
+                        ids.Add(reader.GetInt32(0) - 1);
                     }
                 }
             }

@@ -12,10 +12,70 @@ namespace Datebase_
 {
     internal class Common
     {
+        public static string res_path = Application.StartupPath + "../../../resources/";
         static string base_path = Application.StartupPath;
         static string dbName = "DB_employees";
-        public static string connectionStr = "Server=localhost;Database=DB_employees;Trusted_Connection = true";
-        static string createStr = "Server=localhost;Integrated security=SSPI;database=master";
+        public static string connectionStr = "";
+        static string createStr = "";
+        public static string CpyImgToRes(string img_path)
+        {
+            string path = $"{res_path}img/{Path.GetFileName(img_path)}";
+            System.IO.File.Copy(img_path, path, true);
+            return path;
+        }
+        public static bool ConnectStr(string server_name, string user_id, string pwd, bool logged)
+        {
+            if (server_name.Equals("")) server_name = "localhost";
+            bool error = false;
+            if (logged)
+            {
+                connectionStr = $@"Server={server_name};Database=DB_employees;user id={user_id};pwd={pwd}";
+                createStr = $@"Server={server_name};Integrated security=SSPI;user id={user_id};pwd={pwd};database=master";
+            } else
+            {
+                connectionStr = $@"Server={server_name};Database=DB_employees;Trusted_Connection=True";
+                createStr = $@"Server={server_name};Integrated security=SSPI;database=master";
+            }
+            try
+            {
+                if (!HasDatabase()) error = CreateDB();
+            }
+            catch
+            {
+                error = true;
+            }
+            return error;
+        }
+        public static bool HasDatabase()
+        {
+            bool has = false;
+            SqlConnection connection = new SqlConnection(createStr);
+            try
+            {
+                connection.Open();
+                SqlCommand command_ = new SqlCommand($"SELECT * FROM master.dbo.sysdatabases where name = '{dbName}'", connection);
+                using (SqlDataReader reader = command_.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        has = true;
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+            return has;
+        }
         public static bool RemoveRow(string table, int id)
         {
             bool error = false;
@@ -23,7 +83,6 @@ namespace Datebase_
             try
             {
                 connection.Open();
-
                 using (DbCommand command_ = new SqlCommand("DELETE FROM " + table + " WHERE ID = " + id + ";"))
                 {
                     command_.Connection = connection;
@@ -125,8 +184,38 @@ namespace Datebase_
                 }
             }
         }
-        public static void CreateDB()
+        public static bool EmptyTableContent(string table)
         {
+            bool error = false;
+            SqlConnection connection = new SqlConnection(connectionStr);
+            try
+            {
+                connection.Open();
+                using (DbCommand command_ = new SqlCommand($"DELETE FROM {table}"))
+                {
+                    command_.Connection = connection;
+                    command_.ExecuteNonQuery();
+                }
+                _ = Log.WriteLog("Removed content of " + table + " - " + DateTime.Now.ToString());
+            }
+            catch (System.Exception ex)
+            {
+                error = true;
+                MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+            return error;
+        }
+        public static bool CreateDB()
+        {
+            bool error = false;
             SqlConnection connection = new SqlConnection(createStr);
             String str = GetDbCreationQuery();
             SqlCommand myCommand = new SqlCommand(str, connection);
@@ -160,6 +249,7 @@ namespace Datebase_
             }
             catch (System.Exception ex)
             {
+                error = true;
                 MessageBox.Show(ex.ToString(), "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _ = Log.WriteLog("Error: " + ex.ToString() + " - " + DateTime.Now.ToString());
             }
@@ -170,6 +260,7 @@ namespace Datebase_
                     connection.Close();
                 }
             }
+            return error;
         }
     }
 }
